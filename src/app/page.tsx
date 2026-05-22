@@ -604,6 +604,20 @@ export default function Home() {
                 </span>
               </span>
               <span className="flex gap-1">
+                {i > 0 && (
+                  <button onClick={() => {
+                    const newTrans = [...data.transactions];
+                    [newTrans[i - 1], newTrans[i]] = [newTrans[i], newTrans[i - 1]];
+                    saveData({ ...data, transactions: newTrans });
+                  }} className="text-slate-500 text-xs">↑</button>
+                )}
+                {i < data.transactions.length - 1 && (
+                  <button onClick={() => {
+                    const newTrans = [...data.transactions];
+                    [newTrans[i], newTrans[i + 1]] = [newTrans[i + 1], newTrans[i]];
+                    saveData({ ...data, transactions: newTrans });
+                  }} className="text-slate-500 text-xs">↓</button>
+                )}
                 <button onClick={() => startForm(`trans-edit-${i}`, {
                   date: t.date,
                   category: t.category,
