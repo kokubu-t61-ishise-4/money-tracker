@@ -719,6 +719,19 @@ export default function Home() {
         <div className="text-center text-slate-600 text-xs mt-4">
           {isSaving ? "Saving..." : lastSaved ? `Saved: ${lastSaved.toLocaleTimeString()}` : ""}
         </div>
+
+        <div className="text-center mt-8">
+          <button
+            onClick={() => {
+              if (confirm("Reset all data? This cannot be undone.")) {
+                saveData(defaultData);
+              }
+            }}
+            className="text-red-400 text-xs border border-red-400 px-2 py-1"
+          >
+            Reset All Data
+          </button>
+        </div>
       </div>
     </div>
   );
