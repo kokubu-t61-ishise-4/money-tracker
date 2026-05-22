@@ -302,18 +302,23 @@ export default function Home() {
                 />
                 {acc.name}:
               </span>
-              {isMizuho ? (
-                <span className="text-slate-500">¥{displayBalance.toLocaleString()} (= Transfer)</span>
-              ) : (
-                <EditableNumber
-                  value={acc.balance}
-                  onChange={(v) => {
-                    const newAccounts = [...data.accounts];
-                    newAccounts[originalIndex] = { ...acc, balance: v };
-                    saveData({ ...data, accounts: newAccounts });
-                  }}
-                />
-              )}
+              <span className="flex items-center gap-2">
+                {isMizuho ? (
+                  <span className="text-slate-500">¥{displayBalance.toLocaleString()} (= Transfer)</span>
+                ) : (
+                  <EditableNumber
+                    value={acc.balance}
+                    onChange={(v) => {
+                      const newAccounts = [...data.accounts];
+                      newAccounts[originalIndex] = { ...acc, balance: v };
+                      saveData({ ...data, accounts: newAccounts });
+                    }}
+                  />
+                )}
+                {!isMizuho && (
+                  <button onClick={() => saveData({ ...data, accounts: data.accounts.filter((_, idx) => idx !== originalIndex) })} className="text-red-400 text-xs">Del</button>
+                )}
+              </span>
             </div>
           );
         })}
@@ -354,8 +359,38 @@ export default function Home() {
           <span className="text-slate-500">-¥{totalMonthlyBills.toLocaleString()}</span>
         </div>
         {data.monthlyBills.map((bill, i) => (
-          <div key={i} className="flex justify-between items-center">
-            <span>¥{bill.amount.toLocaleString()} Day {bill.day}: {bill.name} ({bill.source || defaultSource})</span>
+          <div key={i}>
+            <div className="flex justify-between items-center">
+              <span>¥{bill.amount.toLocaleString()} Day {bill.day}: {bill.name} ({bill.source || defaultSource})</span>
+              <span className="flex gap-1">
+                <button onClick={() => startForm(`bill-edit-${i}`, {
+                  name: bill.name,
+                  amount: String(bill.amount),
+                  day: String(bill.day),
+                  source: bill.source || defaultSource
+                })} className="text-blue-400 text-xs">Edit</button>
+                <button onClick={() => saveData({ ...data, monthlyBills: data.monthlyBills.filter((_, idx) => idx !== i) })} className="text-red-400 text-xs">Del</button>
+              </span>
+            </div>
+            {editingField === `bill-edit-${i}` && (
+              <div className="bg-slate-900 p-2 my-1">
+                <input placeholder="Name" value={formValues.name || ""} onChange={(e) => setFormValues({ ...formValues, name: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <input placeholder="Amount" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <input placeholder="Day (1-31)" type="number" value={formValues.day || ""} onChange={(e) => setFormValues({ ...formValues, day: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
+                <div className="flex gap-2">
+                  <button onClick={() => {
+                    if (formValues.name && formValues.amount && formValues.day) {
+                      const newBills = [...data.monthlyBills];
+                      newBills[i] = { name: formValues.name, amount: parseInt(formValues.amount), day: parseInt(formValues.day), source: formValues.source || defaultSource };
+                      saveData({ ...data, monthlyBills: newBills.sort((a, b) => a.day - b.day) });
+                      closeForm();
+                    }
+                  }} className="text-blue-400">Save</button>
+                  <button onClick={closeForm} className="text-slate-500">Cancel</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
         {editingField === "bill" ? (
@@ -490,9 +525,37 @@ export default function Home() {
           const spent = getSpent(b.name);
           const left = b.amount - spent;
           return (
-            <div key={i} className="flex justify-between items-center">
-              <span>{b.name} ({b.source})</span>
-              <span className={left < 0 ? "text-red-400" : ""}>¥{left.toLocaleString()} / ¥{b.amount.toLocaleString()}</span>
+            <div key={i}>
+              <div className="flex justify-between items-center">
+                <span>{b.name} ({b.source})</span>
+                <span className="flex items-center gap-2">
+                  <span className={left < 0 ? "text-red-400" : ""}>¥{left.toLocaleString()} / ¥{b.amount.toLocaleString()}</span>
+                  <button onClick={() => startForm(`budget-edit-${i}`, {
+                    name: b.name,
+                    amount: String(b.amount),
+                    source: b.source
+                  })} className="text-blue-400 text-xs">Edit</button>
+                  <button onClick={() => saveData({ ...data, budgets: data.budgets.filter((_, idx) => idx !== i) })} className="text-red-400 text-xs">Del</button>
+                </span>
+              </div>
+              {editingField === `budget-edit-${i}` && (
+                <div className="bg-slate-900 p-2 my-1">
+                  <input placeholder="Category (e.g. Lunch)" value={formValues.name || ""} onChange={(e) => setFormValues({ ...formValues, name: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                  <input placeholder="Budget amount" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                  <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
+                  <div className="flex gap-2">
+                    <button onClick={() => {
+                      if (formValues.name && formValues.amount) {
+                        const newBudgets = [...data.budgets];
+                        newBudgets[i] = { name: formValues.name, amount: parseInt(formValues.amount), source: formValues.source || defaultSource };
+                        saveData({ ...data, budgets: newBudgets });
+                        closeForm();
+                      }
+                    }} className="text-blue-400">Save</button>
+                    <button onClick={closeForm} className="text-slate-500">Cancel</button>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -519,22 +582,69 @@ export default function Home() {
 
         <div>Transactions:</div>
         {data.transactions.map((t, i) => (
-          <div key={i} className="flex justify-between items-center">
-            <span className="flex items-center gap-1">
-              <input
-                type="checkbox"
-                checked={t.inCalc !== false}
-                onChange={(e) => {
-                  const newTrans = [...data.transactions];
-                  newTrans[i] = { ...t, inCalc: e.target.checked };
-                  saveData({ ...data, transactions: newTrans });
-                }}
-                className="accent-green-400"
-              />
-              <span className={t.inCalc === false ? "text-slate-600" : ""}>
-                {t.date} {t.category} {t.amount >= 0 ? "+" : ""}¥{Math.abs(t.amount).toLocaleString()} {t.source} {t.note && `- ${t.note}`}
+          <div key={i}>
+            <div className="flex justify-between items-center">
+              <span className="flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  checked={t.inCalc !== false}
+                  onChange={(e) => {
+                    const newTrans = [...data.transactions];
+                    newTrans[i] = { ...t, inCalc: e.target.checked };
+                    saveData({ ...data, transactions: newTrans });
+                  }}
+                  className="accent-green-400"
+                />
+                <span className={t.inCalc === false ? "text-slate-600" : ""}>
+                  {t.date} {t.category} {t.amount >= 0 ? "+" : ""}¥{Math.abs(t.amount).toLocaleString()} {t.source} {t.note && `- ${t.note}`}
+                </span>
               </span>
-            </span>
+              <span className="flex gap-1">
+                <button onClick={() => startForm(`trans-edit-${i}`, {
+                  date: t.date,
+                  category: t.category,
+                  amount: String(t.amount),
+                  source: t.source,
+                  note: t.note || "",
+                  inCalc: t.inCalc === false ? "false" : "true"
+                })} className="text-blue-400 text-xs">Edit</button>
+                <button onClick={() => saveData({ ...data, transactions: data.transactions.filter((_, idx) => idx !== i) })} className="text-red-400 text-xs">Del</button>
+              </span>
+            </div>
+            {editingField === `trans-edit-${i}` && (
+              <div className="bg-slate-900 p-2 my-1">
+                <input placeholder="Date (e.g. 5/25)" value={formValues.date || ""} onChange={(e) => setFormValues({ ...formValues, date: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <select value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1">
+                  <option value="">-- Select Category --</option>
+                  {data.budgets.map((b) => (
+                    <option key={b.name} value={b.name}>{b.name}</option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
+                {formValues.category === "Other" && (
+                  <input placeholder="Custom category" value={formValues.customCategory || ""} onChange={(e) => setFormValues({ ...formValues, customCategory: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                )}
+                <input placeholder="Amount (negative for expense)" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
+                <input placeholder="Note (optional)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <label className="flex items-center gap-2 mb-1">
+                  <input type="checkbox" checked={formValues.inCalc !== "false"} onChange={(e) => setFormValues({ ...formValues, inCalc: e.target.checked ? "true" : "false" })} className="accent-green-400" />
+                  <span>Include in calculation</span>
+                </label>
+                <div className="flex gap-2">
+                  <button onClick={() => {
+                    const category = formValues.category === "Other" ? formValues.customCategory : formValues.category;
+                    if (formValues.date && category && formValues.amount) {
+                      const newTrans = [...data.transactions];
+                      newTrans[i] = { date: formValues.date, category, amount: parseInt(formValues.amount), source: formValues.source || defaultSource, note: formValues.note || "", inCalc: formValues.inCalc !== "false" };
+                      saveData({ ...data, transactions: newTrans });
+                      closeForm();
+                    }
+                  }} className="text-blue-400">Save</button>
+                  <button onClick={closeForm} className="text-slate-500">Cancel</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
         {editingField === "transaction" ? (
