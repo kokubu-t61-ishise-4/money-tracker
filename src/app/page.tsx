@@ -600,7 +600,7 @@ export default function Home() {
                   className="accent-green-400"
                 />
                 <span className={t.inCalc === false ? "text-slate-600" : ""}>
-                  {t.date} {t.category} {t.amount >= 0 ? "+" : ""}¥{Math.abs(t.amount).toLocaleString()} {t.source} {t.note && `- ${t.note}`}
+                  {t.date} {t.category} {t.amount >= 0 ? "+" : ""}¥{Math.abs(t.amount).toLocaleString()} {t.source}
                 </span>
               </span>
               <span className="flex gap-1">
@@ -615,13 +615,16 @@ export default function Home() {
                 <button onClick={() => saveData({ ...data, transactions: data.transactions.filter((_, idx) => idx !== i) })} className="text-red-400 text-xs">Del</button>
               </span>
             </div>
+            {t.note && (
+              <div className="text-slate-500 text-xs ml-5 whitespace-pre-wrap">{t.note}</div>
+            )}
             {editingField === `trans-edit-${i}` && (
               <div className="bg-slate-900 p-2 my-1">
                 <input placeholder="Date (e.g. 5/25)" value={formValues.date || ""} onChange={(e) => setFormValues({ ...formValues, date: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
                 <input placeholder="Category" value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
                 <input placeholder="Amount (negative for expense)" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
                 <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
-                <input placeholder="Note (optional)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+                <textarea placeholder="Note (optional, Shift+Enter for newline)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} rows={2} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1 resize-none" />
                 <label className="flex items-center gap-2 mb-1">
                   <input type="checkbox" checked={formValues.inCalc !== "false"} onChange={(e) => setFormValues({ ...formValues, inCalc: e.target.checked ? "true" : "false" })} className="accent-green-400" />
                   <span>Include in calculation</span>
@@ -647,7 +650,7 @@ export default function Home() {
             <input placeholder="Category" value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
             <input placeholder="Amount (negative for expense)" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
             <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
-            <input placeholder="Note (optional)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
+            <textarea placeholder="Note (optional, Shift+Enter for newline)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} rows={2} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1 resize-none" />
             <label className="flex items-center gap-2 mb-1">
               <input type="checkbox" checked={formValues.inCalc !== "false"} onChange={(e) => setFormValues({ ...formValues, inCalc: e.target.checked ? "true" : "false" })} className="accent-green-400" />
               <span>Include in calculation</span>
