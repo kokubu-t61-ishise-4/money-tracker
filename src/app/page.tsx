@@ -618,16 +618,7 @@ export default function Home() {
             {editingField === `trans-edit-${i}` && (
               <div className="bg-slate-900 p-2 my-1">
                 <input placeholder="Date (e.g. 5/25)" value={formValues.date || ""} onChange={(e) => setFormValues({ ...formValues, date: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
-                <select value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1">
-                  <option value="">-- Select Category --</option>
-                  {data.budgets.map((b) => (
-                    <option key={b.name} value={b.name}>{b.name}</option>
-                  ))}
-                  <option value="Other">Other</option>
-                </select>
-                {formValues.category === "Other" && (
-                  <input placeholder="Custom category" value={formValues.customCategory || ""} onChange={(e) => setFormValues({ ...formValues, customCategory: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
-                )}
+                <input placeholder="Category" value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
                 <input placeholder="Amount (negative for expense)" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
                 <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
                 <input placeholder="Note (optional)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
@@ -637,10 +628,9 @@ export default function Home() {
                 </label>
                 <div className="flex gap-2">
                   <button onClick={() => {
-                    const category = formValues.category === "Other" ? formValues.customCategory : formValues.category;
-                    if (formValues.date && category && formValues.amount) {
+                    if (formValues.date && formValues.category && formValues.amount) {
                       const newTrans = [...data.transactions];
-                      newTrans[i] = { date: formValues.date, category, amount: parseInt(formValues.amount), source: formValues.source || defaultSource, note: formValues.note || "", inCalc: formValues.inCalc !== "false" };
+                      newTrans[i] = { date: formValues.date, category: formValues.category, amount: parseInt(formValues.amount), source: formValues.source || defaultSource, note: formValues.note || "", inCalc: formValues.inCalc !== "false" };
                       saveData({ ...data, transactions: newTrans });
                       closeForm();
                     }
@@ -654,16 +644,7 @@ export default function Home() {
         {editingField === "transaction" ? (
           <div className="bg-slate-900 p-2 my-1">
             <input placeholder="Date (e.g. 5/25)" value={formValues.date || `${data.month}/${new Date().getDate()}`} onChange={(e) => setFormValues({ ...formValues, date: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
-            <select value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1">
-              <option value="">-- Select Category --</option>
-              {data.budgets.map((b) => (
-                <option key={b.name} value={b.name}>{b.name}</option>
-              ))}
-              <option value="Other">Other</option>
-            </select>
-            {formValues.category === "Other" && (
-              <input placeholder="Custom category" value={formValues.customCategory || ""} onChange={(e) => setFormValues({ ...formValues, customCategory: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
-            )}
+            <input placeholder="Category" value={formValues.category || ""} onChange={(e) => setFormValues({ ...formValues, category: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
             <input placeholder="Amount (negative for expense)" type="number" value={formValues.amount || ""} onChange={(e) => setFormValues({ ...formValues, amount: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
             <SourceSelect value={formValues.source || defaultSource} onChange={(v) => setFormValues({ ...formValues, source: v })} />
             <input placeholder="Note (optional)" value={formValues.note || ""} onChange={(e) => setFormValues({ ...formValues, note: e.target.value })} className="bg-black text-green-400 border border-green-600 px-1 w-full mb-1" />
@@ -673,9 +654,8 @@ export default function Home() {
             </label>
             <div className="flex gap-2">
               <button onClick={() => {
-                const category = formValues.category === "Other" ? formValues.customCategory : formValues.category;
-                if (formValues.date && category && formValues.amount) {
-                  saveData({ ...data, transactions: [...data.transactions, { date: formValues.date, category, amount: parseInt(formValues.amount), source: formValues.source || defaultSource, note: formValues.note || "", inCalc: formValues.inCalc !== "false" }] });
+                if (formValues.date && formValues.category && formValues.amount) {
+                  saveData({ ...data, transactions: [...data.transactions, { date: formValues.date, category: formValues.category, amount: parseInt(formValues.amount), source: formValues.source || defaultSource, note: formValues.note || "", inCalc: formValues.inCalc !== "false" }] });
                   closeForm();
                 }
               }} className="text-blue-400">Save</button>
