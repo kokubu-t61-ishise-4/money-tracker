@@ -578,6 +578,10 @@ export default function Home() {
           <button onClick={() => startForm("budget", { source: defaultSource })} className="text-blue-400 text-xs">+ Add Budget</button>
         )}
         <div className="text-slate-500">Total Budget: -¥{totalBudgets.toLocaleString()}</div>
+        <div className="text-slate-600 text-xs flex justify-between">
+          <span>→ After Budget:</span>
+          <span>¥{(remaining - totalBudgets).toLocaleString()}</span>
+        </div>
         <Divider />
 
         <div>Transactions:</div>
@@ -681,6 +685,10 @@ export default function Home() {
         ) : (
           <button onClick={() => startForm("transaction", { date: `${data.month}/${new Date().getDate()}`, source: defaultSource })} className="text-blue-400 text-xs">+ Add Transaction</button>
         )}
+        <div className="text-slate-600 text-xs flex justify-between">
+          <span>→ After Transactions:</span>
+          <span>¥{actualRemaining.toLocaleString()}</span>
+        </div>
         <Divider />
 
         <div className="flex justify-between text-yellow-400 font-bold">
