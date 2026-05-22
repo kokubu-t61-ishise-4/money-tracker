@@ -377,6 +377,10 @@ export default function Home() {
         ) : (
           <button onClick={() => startForm("bill", { source: defaultSource })} className="text-blue-400 text-xs">+ Add Bill</button>
         )}
+        <div className="text-slate-600 text-xs flex justify-between">
+          <span>→ After Bills:</span>
+          <span>¥{(totalSelectedAccounts + totalSelectedCash - totalMonthlyBills).toLocaleString()}</span>
+        </div>
         <Divider />
 
         <div className="flex justify-between">
@@ -454,6 +458,10 @@ export default function Home() {
         ) : (
           <button onClick={() => startForm("shopping", { source: defaultSource })} className="text-blue-400 text-xs">+ Add Shopping</button>
         )}
+        <div className="text-slate-600 text-xs flex justify-between">
+          <span>→ After Shopping:</span>
+          <span>¥{remaining.toLocaleString()}</span>
+        </div>
         <Divider />
 
         <div className="flex justify-between text-yellow-400 font-bold">
