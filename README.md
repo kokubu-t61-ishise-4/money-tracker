@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Money Tracker
 
-## Getting Started
+## 概要
+個人の資産・支出を一画面で管理できる家計簿アプリです。
+銀行口座、現金、予算、買い物リスト、貯金などを一元管理し、残高と支出のバランスを把握できます。
+データはクラウドに自動保存され、セクションごとにUndo/Redo機能で安全に編集できます。
 
-First, run the development server:
+## 主な機能
+- 対象期間設定: 月と日付範囲を指定して管理期間を設定
+- 固定費管理: 毎月の固定支出を登録、買い物リストへのワンクリック追加
+- 振替計算: 収入・貯金額から振替金額を自動計算
+- 銀行口座・現金管理: 複数口座の残高、現金（1万円・5千円・千円札の枚数）を管理
+- 予算管理: カテゴリ別の予算と使用状況をプログレスバーで表示
+- 買い物リスト: 日付別の支出記録、サブアイテムの追加に対応
+- 貯金口座管理: 複数の貯金口座残高を管理
+- Suica残高・メモ・画像保存: 交通系ICカード残高、フリーメモ、画像のアップロード
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 使い方
+1. 「DATE RANGE」で管理対象の月と日付範囲を設定
+2. 「FIXED COSTS」に毎月の固定費を登録
+3. 「TRANSFER」に収入と貯金目標を入力
+4. 「BANK ACCOUNTS」「CASH」に残高を入力
+5. 「BUDGET」で予算カテゴリを設定し、使用額を更新
+6. 「SHOPPING LIST」に日々の支出を記録
+7. 「RESERVE」で残高から予算・支出を引いた余剰を確認
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 技術スタック
+- **フレームワーク**: Next.js 16.2.6 (React 19)
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS 4
+- **データベース**: Supabase
+- **ホスティング**: Netlify
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## URL
+https://genuine-truffle-de004c.netlify.app/
