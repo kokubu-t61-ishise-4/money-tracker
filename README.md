@@ -29,7 +29,3 @@
 - **言語**: TypeScript
 - **スタイリング**: Tailwind CSS 4
 - **データベース**: Supabase
-- **ホスティング**: Netlify
-
-## URL
-https://genuine-truffle-de004c.netlify.app/
